@@ -8,10 +8,19 @@ import org.shcoobz.vehicle.Vehicle;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-// Record representing a parking ticket with reservation time, spot, and vehicle details
+/**
+ * Record representing a parking ticket. It includes reservation time, spot reserved time, parking spot details,
+ * and vehicle details. This record is used to track parking reservations within the parking garage.
+ */
 public record Ticket(LocalDateTime reservationTime, LocalDateTime spotReservedTime, ParkingSpot spot, Vehicle vehicle) {
   private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy, HH:mm:ss");
 
+  /**
+   * Returns a string representation of the Ticket record, including formatted reservation time,
+   * spot reserved time, spot type, spot ID, spot price, vehicle type, and vehicle ID.
+   *
+   * @return A formatted string representing the details of the parking ticket.
+   */
   @Override
   public String toString() {
     String spotType = spot instanceof SmallSpot ? "Small Spot" : "Large Spot";

@@ -11,19 +11,25 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-// Represents a parking garage with functionality to reserve parking spots
-
+/**
+ * Represents a parking garage with functionality to manage and reserve parking spots.
+ * The garage maintains a collection of free and reserved parking spots.
+ */
 public class ParkingGarage {
-  // map: collection that maps keys to values; no duplicates; stores key-value pairs -> adding, removing etc based on keys
-  // hashmap: implements map; uses hash table to store map -> mapping of jey-value pairs, order is not important
   private final Map<String, ParkingSpot> freeSpots = new HashMap<>();
   private final Map<String, Vehicle> reservedSpots = new HashMap<>();
 
-  // constructor, generates small and large Spots and adds to the map
+  /**
+   * Constructs a ParkingGarage instance and initializes it with a specified number
+   * of small and large parking spots.
+   *
+   * @param smallSpots The number of small parking spots to be created in the garage.
+   * @param largeSpots The number of large parking spots to be created in the garage.
+   */
   public ParkingGarage(int smallSpots, int largeSpots) {
     for (int i = 0; i < smallSpots; i++) {
-      SmallSpot spot = new SmallSpot(); // creates spot
-      freeSpots.put(spot.getId(), spot); // add to list, with id
+      SmallSpot spot = new SmallSpot();
+      freeSpots.put(spot.getId(), spot);
     }
 
     for (int i = 0; i < largeSpots; i++) {
@@ -32,17 +38,25 @@ public class ParkingGarage {
     }
   }
 
-  // check if small spot is available
+  /**
+   * Checks if there is an available small parking spot in the garage.
+   *
+   * @return true if a small parking spot is available, false otherwise.
+   */
   private boolean isSmallSpotAvailable() {
-    return freeSpots.values().stream() //gets all freespots, converts to java stream
-        .filter(spot -> spot instanceof SmallSpot) // filtering only small spots
+    return freeSpots.values().stream()
+        .filter(spot -> spot instanceof SmallSpot)
         .anyMatch(spot -> !reservedSpots.containsKey(spot.getId()));
-    // checks whether any elements of stream match given condition;
-    // checks if spot's ID is not present in reservedSpots map, indicating the spot is not reserved
-    // if it finds small spot not reserved: true, else false
   }
 
-  // reserve logic
+  /**
+   * Reserves a parking spot for a vehicle if a suitable spot is available.
+   * The reservation is based on the type of the vehicle and the available parking spots.
+   *
+   * @param vehicle The vehicle for which the parking spot is to be reserved.
+   * @param spotReservedTime The time at which the spot is being reserved.
+   * @return A parking ticket if a spot is reserved successfully, null otherwise.
+   */
   public Ticket reserveSpot(Vehicle vehicle, LocalDateTime spotReservedTime) {
     for (ParkingSpot spot : freeSpots.values()) {
       if (!reservedSpots.containsKey(spot.getId())) {
@@ -50,7 +64,6 @@ public class ParkingGarage {
             vehicle instanceof Truck && spot instanceof LargeSpot ||
             vehicle instanceof Car && spot instanceof LargeSpot && !isSmallSpotAvailable()) {
 
-          // if there is a spot, it is reserved
           reservedSpots.put(spot.getId(), vehicle);
           LocalDateTime reservationTime = LocalDateTime.now();
 
@@ -58,6 +71,6 @@ public class ParkingGarage {
         }
       }
     }
-    return null; // no available spot
+    return null;
   }
 }
